@@ -1,0 +1,8 @@
+*.o
+*.txt
+Lab15Files
+.vscode
+*.htm
+*.bak
+*.dep
+*.axf
