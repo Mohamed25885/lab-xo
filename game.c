@@ -1,10 +1,11 @@
 #include "Nokia5110.h"
 #include "common.h"
 #include <string.h>
-extern unsigned char GAME_GRID[3][3];
+
 extern unsigned char SCORE[2];
-extern const unsigned char XShape[];
+extern unsigned char GAME_GRID[3][3];
 extern const unsigned char OShape[];
+extern const unsigned char XShape[];
 extern unsigned int current_player;
 void update_score(unsigned char board[3][3], unsigned char *score);
 void has_winner(void);
