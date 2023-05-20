@@ -1090,11 +1090,9 @@ ARM Macro Assembler    Page 17
               00000400 
               00000000 
 Command Line: --debug --xref --cpu=Cortex-M4 --apcs=interwork --depend=.\startu
-p.d -o.\startup.o -I"D:\Media\College\Year 3\Second Term\Lab\Simulators\Install
-ed\ARM\RV31\INC" -I"D:\Media\College\Year 3\Second Term\Lab\Simulators\Installe
-d\ARM\CMSIS\Include" -I"D:\Media\College\Year 3\Second Term\Lab\Simulators\Inst
-alled\ARM\Inc\Luminary" --predefine="__RTX SETA 1" --predefine="__EVAL SETA 1" 
---list=.\startup.lst startup.s
+p.d -o.\startup.o -IC:\Keil\ARM\RV31\INC -IC:\Keil\ARM\CMSIS\Include -IC:\Keil\
+ARM\Inc\Luminary --predefine="__RTX SETA 1" --predefine="__EVAL SETA 1" --list=
+.\startup.lst startup.s
 
 
 

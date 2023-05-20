@@ -54,7 +54,7 @@ void DrawGrid(void)
     }
     DrawScore();
 }
-
+    
 void DrawPlayedGrid(void)
 {
     int i = 0, j = 0;

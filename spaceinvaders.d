@@ -6,3 +6,6 @@
 .\spaceinvaders.o: bitmaps.h
 .\spaceinvaders.o: game.h
 .\spaceinvaders.o: common.h
+.\spaceinvaders.o: GPIO_interface.h
+.\spaceinvaders.o: Types.h
+.\spaceinvaders.o: NVIC_interface.h
