@@ -62,9 +62,8 @@ int main(void)
   DrawGrid();
 
   // TExaS_Init initializes the real board grader for lab 4
-  PortE_Init();       // Call initialization of port PF4, PF3, PF2, PF1, PF0
-  EnableInterrupts(); // setting the PRIMASK register bit no 0 with value 0 to enable
-  //all inturrupts 'global inturrupt register'
+  PortF_Init();       // Call initialization of port PF4, PF3, PF2, PF1, PF0
+  EnableInterrupts(); // The grader uses interrupts
   while (1)
   {
 		
@@ -244,152 +243,12 @@ void PortE_Init(void)
   volatile unsigned long delay;
   SYSCTL_RCGC2_R |= 0x00000010;   // 1) F clock
   delay = SYSCTL_RCGC2_R;         // delay
-  GPIO_PORTE_LOCK_R = 0x4C4F434B; // 2) unlock PortF PF0
-  GPIO_PORTE_CR_R = 0xFF;         // allow changes to PF4-0
-  GPIO_PORTE_AMSEL_R = 0x00;      // 3) disable analog function
-  GPIO_PORTE_PCTL_R = 0x00000000; // 4) GPIO clear bit PCTL
-  GPIO_PORTE_DIR_R = 0x00;        // 5) PF4,PF0, PF3,PF2,PF1 input
-  GPIO_PORTE_AFSEL_R = 0x00;      // 6) no alternate function
-  GPIO_PORTE_PUR_R = 0xFF;        // enable pullup resistors on PF4->PF0
-  GPIO_PORTE_DEN_R = 0xFF;        // 7) enable digital pins PF4-PF0
-  /*
-	NVIC_PRI0_R = (NVIC_PRI0_R & 0x00ffffff) | 0x00A00000;
-	GPIO_PORTE_IM_R  = 0xFF;
-	GPIO_PORTE_IS_R  = 0x00;
-  GPIO_PORTE_IBE_R  = 0x00;
-  GPIO_PORTE_IEV_R = 0xFF; 
-  NVIC_PRI1_R |= 0x00200000;
-  NVIC_EN0_R |= 0x10;
-  __enable_irq();
-*/
-}
-
-
-
-//test
-
-
-void GPIOE_Handler(void)
-{
-  while (GPIO_PORTE_MIS_R != 0)
-  {
-		
-	 if (GPIO_PORTE_MIS_R & 0x02) 
-    {                                 
-			Delay100ms(5);
-      if (!GAME_GRID[Y][X])
-      {
-        Nokia5110_ClearBuffer();
-        GAME_GRID[Y][X] = current_player + 1;
-        DrawPlayedGrid();
-        if (GAME_GRID[Y][X] == 1)
-        {
-          Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedXShape, 0); // player ship middle bottom
-        }
-        else if (GAME_GRID[Y][X] == 2)
-        {
-          Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedOShape, 0); // player ship middle bottom
-        }
-        current_player = current_player == 0 ? 1 : 0;
-        Nokia5110_DisplayBuffer(); // draw buffer
-        DrawGrid();
-        Delay100ms(2);
-      }
-    }
-		if (GPIO_PORTE_MIS_R & 0x04) 
-    {                                 
-			Delay100ms(5);
-      // just SWDown pressed
-      Nokia5110_ClearBuffer();
-      StepDown(&Y);
-      DrawPlayedGrid();
-      if (GAME_GRID[Y][X] == 1)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedXShape, 0); // player ship middle bottom
-      }
-      else if (GAME_GRID[Y][X] == 2)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedOShape, 0); // player ship middle bottom
-      }
-      else
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, SelectHere, 0); // player ship middle bottom
-      }
-      Nokia5110_DisplayBuffer(); // draw buffer
-      DrawGrid();
-      Delay100ms(2);
-    }
-		
-		if (GPIO_PORTE_MIS_R & 0x08) {
-		// just SWUp pressed
-      Nokia5110_ClearBuffer();
-      StepUp(&Y);
-      DrawPlayedGrid();
-      if (GAME_GRID[Y][X] == 1)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedXShape, 0); // player ship middle bottom
-      }
-      else if (GAME_GRID[Y][X] == 2)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedOShape, 0); // player ship middle bottom
-      }
-      else
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, SelectHere, 0); // player ship middle bottom
-      }
-      Nokia5110_DisplayBuffer(); // draw buffer
-      DrawGrid();
-      Delay100ms(2);
-		
-		}
-		
-		if (GPIO_PORTE_MIS_R & 0x10) {
-		// just SWLeft pressed
-      Nokia5110_ClearBuffer();
-      StepLeft(&X, &Y);
-      DrawPlayedGrid();
-      if (GAME_GRID[Y][X] == 1)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedXShape, 0); // player ship middle bottom
-      }
-      else if (GAME_GRID[Y][X] == 2)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedOShape, 0); // player ship middle bottom
-      }
-      else
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, SelectHere, 0); // player ship middle bottom
-      }
-      Nokia5110_DisplayBuffer(); // draw buffer
-      DrawGrid();
-      Delay100ms(2);
-		}
-		
-    if (GPIO_PORTE_MIS_R & 0x20) 
-    {// just SWRight pressed
-      Nokia5110_ClearBuffer();
-      StepRight(&X, &Y);
-      DrawPlayedGrid();
-      if (GAME_GRID[Y][X] == 1)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedXShape, 0); // player ship middle bottom
-      }
-      else if (GAME_GRID[Y][X] == 2)
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, InvertedOShape, 0); // player ship middle bottom
-      }
-      else
-      {
-        Nokia5110_PrintBMP(5 + 20 * X, 13 + 17 * Y, SelectHere, 0); // player ship middle bottom
-      }
-      Nokia5110_DisplayBuffer(); // draw buffer
-      DrawGrid();
-      Delay100ms(2);
-    }
-		
-    else
-    { 
-      GPIO_PORTE_ICR_R = GPIO_PORTE_MIS_R;
-    }
-  }
+  GPIO_PORTF_LOCK_R = 0x4C4F434B; // 2) unlock PortF PF0
+  GPIO_PORTF_CR_R = 0x1F;         // allow changes to PF4-0
+  GPIO_PORTF_AMSEL_R = 0x00;      // 3) disable analog function
+  GPIO_PORTF_PCTL_R = 0x00000000; // 4) GPIO clear bit PCTL
+  GPIO_PORTF_DIR_R = 0x0E;        // 5) PF4,PF0 input, PF3,PF2,PF1 output
+  GPIO_PORTF_AFSEL_R = 0x00;      // 6) no alternate function
+  GPIO_PORTF_PUR_R = 0x11;        // enable pullup resistors on PF4,PF0
+  GPIO_PORTF_DEN_R = 0x1F;        // 7) enable digital pins PF4-PF0
 }
